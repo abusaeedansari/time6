@@ -1,0 +1,608 @@
+<prompt>
+    <persona>
+        <role>Educational Game Developer</role>
+        <description>
+            You are an expert in creating interactive, educational web games for young learners. 
+            You specialize in designing gamified experiences that are both engaging and pedagogically sound.
+            Your focus is on delivering exceptional UI and UX tailored to children in primary school.
+        </description>
+    </persona>
+    <objective>
+        Create a web game/quiz for grade 3 students that teaches them how to read the calendar effectively.
+    </objective>
+    <instructions>
+        <note>Reference the screenshots of exercise questions provided for inspiration in designing similar types of questions.</note>
+        <expectations>
+            <uiux>Improve the UI and UX significantly over the last quiz created. Deliver an engaging, child-friendly design.</uiux>
+            <gamification>
+                <description>
+                    Gamify the experience as much as possible. Incorporate features such as:
+                </description>
+                <features>
+                    <feature>A badge system for earning rewards after reaching certain milestones.</feature>
+                    <feature>Fun and challenging elements to keep students engaged.</feature>
+                </features>
+            </gamification>
+            <questionBank>
+                <totalQuestions>100</totalQuestions>
+                <types>
+                    <type>MCQs</type>
+                    <type>Fill-in-the-blanks</type>
+                    <type>Match-the-pairs</type>
+                    <type>Other creative question types suitable for the age group.</type>
+                </types>
+            </questionBank>
+        </expectations>
+        <design>
+            <responsiveness>Ensure the game is fully responsive, working seamlessly on phones, tablets, laptops, and desktops.</responsiveness>
+        </design>
+        <output>
+            <code>
+                <requirement>Write well-structured, high-quality, and comprehensive code.</requirement>
+                <goal>Produce a remarkable learning tool that aligns with our mission to revolutionize education.</goal>
+            </code>
+        </output>
+    </instructions>
+    <references>
+        <oldCode>
+        <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Time Mastery Quiz</title>
+<link rel="icon" href="clock.png" type="image/png">
+
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+<style>
+body {
+  font-family: "Open Sans", sans-serif;
+  background: linear-gradient(to bottom right, #ffecd2, #fcb69f);
+  margin: 0; padding: 0; color: #333;
+}
+header {
+  background: #f76c6c; color: #fff; padding: 20px; text-align: center; margin-bottom: 40px;
+}
+header h1 {
+  margin: 0; font-size: 2em; font-family: "Space Mono", monospace; letter-spacing: 1px;
+}
+.container {
+  max-width: 700px; margin: 20px auto; background: #fff; border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden; padding: 20px; margin-bottom: 40px;
+}
+.intro, .quiz-area, .result-area { display: none; }
+.active { display: block; }
+.intro p {
+  font-size: 1.1em; line-height:1.6em;
+}
+.name-input { margin: 20px 0; }
+input[type="text"] {
+  padding: 10px; width: 100%; box-sizing: border-box;
+  margin-bottom: 15px; border: 1px solid #aaa; border-radius: 5px; font-size: 1.1em;
+}
+.button {
+  background: #f76c6c; color: #fff; padding: 12px 24px; border: none; border-radius:5px;
+  cursor: pointer; font-size: 1.1em; margin: 5px; display: inline-block; font-family:"Space Mono", monospace;
+  transition: background 0.3s ease; text-align:center;
+}
+.button:hover { background: #ee5a5a; }
+.top-info {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom:20px; flex-wrap: wrap;
+}
+.timer, .scoreboard {
+  font-size: 1.1em; font-weight: bold; color: #f76c6c; font-family:"Space Mono", monospace;
+}
+.progress-bar {
+  flex:1; background:#ddd; height:8px; border-radius:4px; margin:0 10px; position:relative; overflow:hidden;
+}
+.progress-fill {
+  background:#f76c6c; width:0%; height:100%; transition:width 0.3s;
+}
+.question-count {
+  font-weight: bold; margin-bottom: 10px; font-size: 1.2em; text-align:center; font-family:"Space Mono", monospace; color:#333;
+}
+.question-text {
+  margin-bottom: 20px; font-size: 1.3em; text-align:center; font-weight:bold; font-family:"Space Mono", monospace; color:#333;
+  padding:0 10px;
+}
+.answers { margin-bottom: 20px; }
+.answers label {
+  display: block; margin-bottom:10px; font-size:1.1em; cursor: pointer;
+  background: #fafafa; padding:10px; border-radius:5px; transition:background 0.3s ease; border:1px solid #ddd;
+  max-width:300px; margin:10px auto; text-align:left;
+}
+.answers label:hover { background:#f6e6e6; }
+.answers input[type=radio] { margin-right:8px; }
+.matching-wrapper .matching-options {
+  display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:20px;
+}
+.matching-option {
+  background:#fafafa; padding:10px; border-radius:5px; border:1px solid #ddd; cursor:pointer; transition:background 0.3s ease;
+  text-align:center; font-size:1.1em; font-family:"Open Sans", sans-serif;
+}
+.matching-option:hover { background:#f6e6e6; }
+.feedback {
+  font-size:1.1em; margin-bottom:20px; padding:10px; border-radius:5px; text-align:center; font-weight:bold; max-width:300px; margin:20px auto;
+}
+.feedback.correct {
+  background:#d5f8d0; border:1px solid #9ed98b; color:#333;
+}
+.feedback.incorrect {
+  background:#fcdcdc; border:1px solid #e5a5a5; color:#333;
+}
+.explanation {
+  font-size:1.1em; margin-bottom:20px; text-align:left; font-style: italic; color:#555; max-width:600px; margin:10px auto;
+  background:#fff8e6; border:1px solid #f6d77a; border-radius:5px; padding:15px;
+}
+footer {
+  text-align:center; color:#030303; margin:20px 0; font-size:1em; font-family:"Open Sans", sans-serif;
+}
+@media(max-width:600px){
+  .question-text { font-size:1.1em; }
+  .answers label, .matching-option { font-size:1em; width:100%; }
+  .explanation { font-size:1em; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Time Mastery Quiz</h1>
+</header>
+<div class="container">
+  <div class="intro active" id="intro">
+    <h2 style="font-family:'Space Mono', monospace; font-size:1.6em; text-align:center;">Welcome!</h2>
+    <p>
+      This quiz tests your understanding of a.m./p.m. formats, tricky time durations, and choosing correct times.  
+      Now with even more challenging options to keep you on your toes!  
+      You have 25 minutes for 100 questions.  
+      Good luck!
+    </p>
+    <div class="name-input">
+      <input type="text" id="playerName" placeholder="Your Name" />
+    </div>
+    <button class="button" onclick="startQuiz()">Start Quiz</button>
+  </div>
+  <div class="quiz-area" id="quiz-area">
+    <div class="top-info">
+      <div class="timer" id="timer">Time: 25:00</div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="scoreboard" id="scoreboard">Score: 0</div>
+    </div>
+    <div class="question-count" id="question-count"></div>
+    <div class="question-text" id="question-text"></div>
+    <div class="answers hidden" id="answers"></div>
+    <div class="matching-wrapper hidden" id="matching-wrapper">
+      <div class="matching-options" id="matching-options"></div>
+    </div>
+    <div class="feedback hidden" id="feedback"></div>
+    <div class="explanation hidden" id="explanation"></div>
+    <div style="text-align:center;">
+      <button class="button" id="mainBtn" onclick="mainButtonClicked()">Check Answer</button>
+    </div>
+  </div>
+  <div class="result-area" id="result-area">
+    <h2>Quiz Completed!</h2>
+    <p id="final-message"></p>
+    <p id="final-score"></p>
+    <p>Thank you for playing! Keep practicing!</p>
+  </div>
+</div>
+<footer>
+  <p>All the best! Learn and conquer time!</p>
+</footer>
+<script>
+function shuffleArray(array) {for (let i=array.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[array[i],array[j]]=[array[j],array[i]];}}
+function randomChoice(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function pad(n){return n<10?"0"+n:n;}
+function formatAMPM(h24,m){let am=(h24<12);let hh=(h24%12===0?12:h24%12);return pad(hh)+":"+pad(m)+" "+(am?"a.m.":"p.m.");}
+function randomM5(){let mins=[0,5,10,15,20,25,30,35,40,45,50,55];return mins[Math.floor(Math.random()*mins.length)];}
+
+function digitalToPhrase(h24,m){
+  let h=(h24%12===0?12:h24%12);
+  if(m===0)return h+" o'clock";
+  if(m===15)return "quarter past "+h;
+  if(m===30)return "half past "+h;
+  if(m===45)return "quarter to "+((h%12)+1);
+  if(m<30)return m+" minutes past "+h;
+  let to=60-m;
+  return to+" minutes to "+((h%12)+1);
+}
+
+// Dayparts
+// Night: 9:00 to 5:00 (21:00-04:59)
+// Morning: 5:01 to 11:59
+// Afternoon: 12:00 to 14:59
+// Evening: 15:00 to 20:59
+
+const scenarioTimes = [
+  {scenario:"School assembly", start:7, end:8},
+  {scenario:"Math class", start:10, end:11},
+  {scenario:"Lunch break", start:12, end:13},
+  {scenario:"Art workshop", start:14, end:15},
+  {scenario:"Soccer practice", start:16, end:17},
+  {scenario:"Dance session", start:15, end:16},
+  {scenario:"Dinner time", start:19, end:20},
+  {scenario:"Evening snack", start:17, end:18},
+  {scenario:"Early morning jog", start:5, end:6},
+  {scenario:"Night reading", start:20, end:21},
+  {scenario:"Afternoon nap", start:13, end:14},
+  {scenario:"Science project", start:9, end:10},
+  {scenario:"Music class", start:11, end:12},
+  {scenario:"History lesson", start:8, end:9},
+  {scenario:"Family gathering", start:18, end:19},
+  {scenario:"Late movie show", start:21, end:22},
+  {scenario:"Midnight snack", start:0, end:1},
+  {scenario:"Gym workout", start:6, end:7},
+  {scenario:"Baking cookies", start:4, end:5},
+  {scenario:"Quiet reading", start:3, end:4},
+  {scenario:"Painting session", start:2, end:3},
+  {scenario:"Morning news", start:5, end:6},
+  {scenario:"Brunch time", start:10, end:11},
+  {scenario:"Late dinner", start:20, end:21}
+];
+
+function getDaypart(h24,m){
+  let total=h24*60+m;
+  if((h24>=21)||(h24<5)) return "night";
+  else if(h24>=5 && h24<12) return "morning";
+  else if(h24>=12 && h24<15) return "afternoon";
+  else if(h24>=15 && h24<21) return "evening";
+  return "morning";
+}
+
+// Generate trickier distractors:
+// For times: create distractors with close minutes/hours
+function generateCloseTimes(correctH24,correctM, count){
+  let distractors=[];
+  while(distractors.length<count){
+    let hDelta=(Math.random()<0.5)?-1:1;
+    let mDelta=(Math.random()<0.5?5:-5);
+    let altH24=correctH24+hDelta;
+    if(altH24<0) altH24+=24;
+    if(altH24>=24) altH24%=24;
+    let altM=correctM+mDelta;
+    if(altM<0) {altM+=60;altH24=(altH24-1<0)?23:altH24-1;}
+    if(altM>=60){altM-=60;altH24=(altH24+1)%24;}
+    let alt=formatAMPM(altH24,altM);
+    if(alt!==formatAMPM(correctH24,correctM)&&!distractors.includes(alt)) distractors.push(alt);
+  }
+  return distractors;
+}
+
+// For phrases: similar approach
+function generateClosePhrases(correctH24,correctM,count){
+  let distractors=[];
+  while(distractors.length<count){
+    let altH24=(correctH24+ (Math.random()<0.5?1:-1)+24)%24;
+    let altMArr=[0,15,30,45,5,25,35,40,50];
+    let altM=altMArr[Math.floor(Math.random()*altMArr.length)];
+    let altP=digitalToPhrase(altH24,altM);
+    let correctP=digitalToPhrase(correctH24,correctM);
+    if(altP!==correctP && !distractors.includes(altP)) distractors.push(altP);
+  }
+  return distractors;
+}
+
+// For durations: just vary by a few minutes/hours
+function generateCloseDurations(correctDur,count){
+  let distractors=[];
+  function parseDur(d){
+    let parts=d.split(" ");
+    let h=0,m=0;
+    for(let i=0;i<parts.length;i++){
+      if(parts[i].includes("hour")) h=parseInt(parts[i-1]);
+      if(parts[i].includes("minute")) m=parseInt(parts[i-1]);
+    }
+    if(d.includes("minute")&&!d.includes("hour"))m=parseInt(parts[0]);
+    if(d.includes("hour")&&!d.includes("minute"))h=parseInt(parts[0]);
+    return {h,m};
+  }
+  function formatDur(h,m){ 
+    if(h>0 && m>0)return h+" hour"+(h>1?"s":"")+" "+m+" minutes";
+    if(h>0 && m===0)return h+" hour"+(h>1?"s":"");
+    if(h===0)return m+" minutes";
+    return h+" hours "+m+" minutes";
+  }
+  let {h,m}=parseDur(correctDur);
+  while(distractors.length<count){
+    let altH=h+ (Math.random()<0.5?1:-1);
+    if(altH<0) altH=0;
+    let altM=m+(Math.random()<0.5?5:-5);
+    if(altM<0) {altM+=15;}
+    if(altM>=60){altM-=60;altH++;}
+    let alt=formatDur(altH,altM);
+    if(alt!==correctDur && !distractors.includes(alt)) distractors.push(alt);
+  }
+  return distractors;
+}
+
+function genScenarioToDigital(){
+  let s=randomChoice(scenarioTimes);
+  let startH=s.start;
+  let endH=s.end;
+  let hRange=((endH<=startH)?(24-startH+endH):(endH-startH));
+  if(hRange<=0) hRange=1;
+  let h24=(Math.floor(Math.random()*hRange)+startH)%24;
+  let m=randomM5();
+  let phrase=digitalToPhrase(h24,m);
+  let correct=formatAMPM(h24,m);
+  let q=s.scenario+" at "+phrase+". Choose the correct digital time:";
+
+  let distractors=generateCloseTimes(h24,m,3);
+  let options=[correct,...distractors];
+  shuffleArray(options);
+  return {type:"mc", question:q,options,correctIndex:options.indexOf(correct),explanation:"Correct: "+correct};
+}
+
+function genDigitalToPhrase(){
+  let h24=Math.floor(Math.random()*24);
+  let m=randomM5();
+  let digital=formatAMPM(h24,m);
+  let correct=digitalToPhrase(h24,m);
+  let q="Time given: "+digital+". Choose the correct phrase:";
+  let distractors=generateClosePhrases(h24,m,3);
+  let options=[correct,...distractors];
+  shuffleArray(options);
+  return {type:"mc",question:q,options,correctIndex:options.indexOf(correct),explanation:"Correct phrase: "+correct};
+}
+
+function genDurationMC(){
+  let startH24=Math.floor(Math.random()*11)+5; 
+  let startM=randomM5();
+  let addedM=[35,45,50,65,80,95,110,125,140][Math.floor(Math.random()*9)];
+  let endTotal=startH24*60+startM+addedM;
+  if(endTotal>=24*60)endTotal=endTotal%(24*60);
+  let endH24=Math.floor(endTotal/60);
+  let endM=endTotal%60;
+  let startD=formatAMPM(startH24,startM);
+  let endD=formatAMPM(endH24,endM);
+  let diff=addedM;
+  let dh=Math.floor(diff/60);let dm=diff%60;
+  let correct=(dh>0?(dh+" hour"+(dh>1?"s":"")+(dm>0?" "+dm+" minutes":"")):(dm+" minutes"));
+  let q="Started an activity at "+startD+" and ended at "+endD+". How long did it last?";
+  let distractors=generateCloseDurations(correct,3);
+  let options=[correct,...distractors];
+  shuffleArray(options);
+  return {type:"mc-duration",question:q,options,correctIndex:options.indexOf(correct),diff:diff,startH24,startM,endH24,endM};
+}
+
+function genPhraseToDigitalMatch(){
+  let h24=Math.floor(Math.random()*24);
+  let m=randomM5();
+  let phrase=digitalToPhrase(h24,m);
+  let correct=formatAMPM(h24,m);
+  let q="Match the phrase '"+phrase+"' with the correct digital time:";
+  let distractors=generateCloseTimes(h24,m,3);
+  let options=[correct,...distractors];
+  shuffleArray(options);
+  return {type:"matching",question:q,options,correctIndex:options.indexOf(correct),explanation:"Correct: "+correct};
+}
+
+function genDurationMatch(){
+  let startH24=Math.floor(Math.random()*11)+5; 
+  let startM=randomM5();
+  let addedM=[35,45,50,65,80,95,110,125][Math.floor(Math.random()*8)];
+  let endTotal=startH24*60+startM+addedM;
+  if(endTotal>=24*60)endTotal=endTotal%(24*60);
+  let endH24=Math.floor(endTotal/60);
+  let endM=endTotal%60;
+  let startD=formatAMPM(startH24,startM);
+  let endD=formatAMPM(endH24,endM);
+  let q="Started at "+startD+" and ended at "+endD+". Match the correct duration:";
+  let dh=Math.floor(addedM/60);let dm=addedM%60;
+  let correct=(dh>0?(dh+" hour"+(dh>1?"s":"")+(dm>0?" "+dm+" minutes":"")):(dm+" minutes"));
+  let distractors=generateCloseDurations(correct,3);
+  let options=[correct,...distractors];
+  shuffleArray(options);
+  return {type:"matching-duration",question:q,options,correctIndex:options.indexOf(correct),startH24,startM,endH24,endM,correct};
+}
+
+function genAMPMQuestion(){
+  let h24=Math.floor(Math.random()*24);
+  let m=randomM5();
+  let hh=(h24%12===0?12:h24%12);
+  let timeStr=pad(hh)+":"+pad(m);
+  let dp=getDaypart(h24,m);
+  let scenario=dp.charAt(0).toUpperCase()+dp.slice(1)+" event";
+  let q=scenario+" at "+timeStr+". Is it a.m. or p.m.?";
+  let correct=(h24<12)?"a.m.":"p.m.";
+  // Make challenging: add distractors like "a.m." or "p.m." and maybe "midnight", "noon"
+  // But we only want a.m./p.m. from instructions, let's add close variants to confuse:
+  // Actually we have only "a.m." and "p.m." - let's add a slight twist by repeating them?
+  // We'll just offer a.m. and p.m. but order them randomly.
+  let options=["a.m.","p.m."];
+  if(correct==="a.m."){
+    // If correct is a.m., no extra distractors needed since only two options
+    // To add challenge, we rely on scenario context.
+  } else {
+    // Similarly just two options is simple enough
+  }
+  shuffleArray(options);
+  return {type:"am-pm",question:q,options,correctIndex:options.indexOf(correct),explanation:"Correct: "+correct};
+}
+
+// Build 100 questions:
+let questions=[];
+for(let i=0;i<25;i++) questions.push(genScenarioToDigital());
+for(let i=0;i<15;i++) questions.push(genDigitalToPhrase());
+for(let i=0;i<20;i++) questions.push(genDurationMC());
+for(let i=0;i<10;i++) questions.push(genPhraseToDigitalMatch());
+for(let i=0;i<10;i++) questions.push(genDurationMatch());
+for(let i=0;i<20;i++) questions.push(genAMPMQuestion());
+shuffleArray(questions);
+
+let playerName="";
+let totalTime=25*60;
+let timerInterval=null;
+let currentQuestionIndex=0;
+let score=0;
+let selectedMatching=null;
+let mode="check";
+
+function startQuiz() {
+  const nameInput = document.getElementById("playerName").value.trim();
+  if(!nameInput) {alert("Please enter your name.");return;}
+  playerName=nameInput;
+  document.getElementById("intro").classList.remove("active");
+  document.getElementById("quiz-area").classList.add("active");
+  startTimer();
+  showQuestion();
+}
+
+function startTimer(){
+  const timerEl=document.getElementById("timer");
+  timerInterval=setInterval(()=>{
+    if(totalTime<=0){clearInterval(timerInterval);endQuiz();return;}
+    totalTime--;
+    let m=Math.floor(totalTime/60);
+    let s=totalTime%60;
+    if(s<10)s="0"+s;
+    timerEl.textContent="Time: "+m+":"+s;
+  },1000);
+}
+
+function showQuestion(){
+  selectedMatching=null;
+  let q=questions[currentQuestionIndex];
+
+  document.getElementById("feedback").classList.add("hidden");
+  document.getElementById("explanation").classList.add("hidden");
+  document.getElementById("explanation").innerHTML="";
+  document.getElementById("feedback").textContent="";
+  document.getElementById("answers").classList.add("hidden");
+  document.getElementById("answers").innerHTML="";
+  document.getElementById("matching-wrapper").classList.add("hidden");
+  document.getElementById("matching-options").innerHTML="";
+  document.getElementById("mainBtn").textContent="Check Answer";
+  mode="check";
+
+  document.getElementById("question-count").textContent="Question "+(currentQuestionIndex+1)+" of "+questions.length;
+  document.getElementById("question-text").textContent=q.question;
+
+  let progressPercent=Math.round((currentQuestionIndex/questions.length)*100);
+  document.getElementById("progress-fill").style.width=progressPercent+"%";
+
+  if(q.type==="mc"||q.type==="mc-duration"||q.type==="am-pm"){
+    let ans=document.getElementById("answers");
+    ans.classList.remove("hidden");
+    q.options.forEach((opt,i)=>{
+      let label=document.createElement("label");
+      let inp=document.createElement("input");
+      inp.type="radio";inp.name="answer";inp.value=i;
+      label.appendChild(inp);
+      label.appendChild(document.createTextNode(" "+opt));
+      ans.appendChild(label);
+    });
+  } else if(q.type==="matching"||q.type==="matching-duration"){
+    document.getElementById("matching-wrapper").classList.remove("hidden");
+    q.options.forEach((opt,i)=>{
+      let divOpt=document.createElement("div");
+      divOpt.className="matching-option";
+      divOpt.textContent=opt;
+      divOpt.setAttribute("data-value",i);
+      divOpt.onclick=()=>selectMatchingOption(i);
+      document.getElementById("matching-options").appendChild(divOpt);
+    });
+  }
+}
+
+function selectMatchingOption(i){
+  selectedMatching=i;
+  let all=document.querySelectorAll(".matching-option");
+  all.forEach(o=>{o.style.background="#fafafa";o.style.border="1px solid #ddd";});
+  let chosen=document.querySelector('.matching-option[data-value="'+i+'"]');
+  chosen.style.background="#f6e6e6";
+  chosen.style.border="1px solid #e5a5a5";
+}
+
+function durationSteps(startH24,startM,endH24,endM){
+  let startTotal=startH24*60+startM;
+  let endTotal=endH24*60+endM;
+  if(endTotal<startTotal) endTotal+=24*60;
+  let diff=endTotal-startTotal;
+
+  let steps=[];
+  let current=startTotal;
+  while(diff>0){
+    let chunk=(diff>=60)?60:diff;
+    let nextBreak=current+chunk;
+    let cH=Math.floor(current/60)%24;let cM=current%60;
+    let nH=Math.floor(nextBreak/60)%24;let nM=nextBreak%60;
+    let ch=Math.floor(chunk/60);let cm=chunk%60;
+    let part=(ch>0?(ch+" hour"+(ch>1?"s":"")+(cm>0?" "+cm+" minutes":"")):(cm+" minutes"));
+    steps.push("From "+formatAMPM(cH,cM)+" to "+formatAMPM(nH,nM)+" = "+part);
+    current=nextBreak;
+    diff-=chunk;
+  }
+  return steps;
+}
+
+function mainButtonClicked(){
+  if(mode==="check") checkAnswer();
+  else nextQuestion();
+}
+
+function checkAnswer(){
+  let q=questions[currentQuestionIndex];
+  let correct=false;
+
+  if(q.type==="mc"||q.type==="mc-duration"||q.type==="am-pm"){
+    let radios=document.querySelectorAll('input[name="answer"]');
+    let userAns=null;for(let r of radios)if(r.checked){userAns=parseInt(r.value);break;}
+    if(userAns===null){alert("Please select an answer.");return;}
+    correct=(userAns===q.correctIndex);
+  } else {
+    if(selectedMatching===null){alert("Please select an answer.");return;}
+    correct=(selectedMatching===q.correctIndex);
+  }
+
+  if(correct) score+=10;
+
+  document.getElementById("feedback").classList.remove("hidden");
+  document.getElementById("feedback").textContent=correct?"Correct!":"Incorrect!";
+  document.getElementById("feedback").classList.remove("correct","incorrect");
+  document.getElementById("feedback").classList.add(correct?"correct":"incorrect");
+
+  let explanation=document.getElementById("explanation");
+  explanation.classList.remove("hidden");
+
+  if(q.type==="mc-duration"||q.type==="matching-duration"){
+    let steps=durationSteps(q.startH24,q.startM,q.endH24,q.endM);
+    let finalDur=q.type==="mc-duration"?q.options[q.correctIndex]:q.correct;
+    if(correct){
+      explanation.innerHTML="Good job! Steps:<br>"+steps.join("<br>")+"<br>Total: "+finalDur;
+    } else {
+      explanation.innerHTML="Steps:<br>"+steps.join("<br>")+"<br>Correct Duration: "+finalDur;
+    }
+  } else {
+    explanation.textContent=(correct?q.explanation:("Correct Answer: "+(q.options?q.options[q.correctIndex]:q.explanation)))||"";
+  }
+
+  document.getElementById("scoreboard").textContent="Score: "+score;
+  document.getElementById("mainBtn").textContent="Next Question";
+  mode="next";
+}
+
+function nextQuestion(){
+  currentQuestionIndex++;
+  if(currentQuestionIndex>=questions.length)endQuiz();
+  else showQuestion();
+}
+
+function endQuiz(){
+  clearInterval(timerInterval);
+  document.getElementById("quiz-area").classList.remove("active");
+  document.getElementById("result-area").classList.add("active");
+  document.getElementById("final-message").textContent="Great job, "+playerName+"!";
+  document.getElementById("final-score").textContent="Your Score: "+score+" out of "+(questions.length*10);
+}
+
+</script>
+</body>
+</html>
+
+        </oldCode>
+        <exerciseScreenshots>Utilize the screenshots for creating diverse and engaging question types.</exerciseScreenshots>
+    </references>
+    <encouragement>If you have any additional ideas to enhance the gamification or user experience, implement them to make the game even more fun and effective.</encouragement>
+</prompt>
